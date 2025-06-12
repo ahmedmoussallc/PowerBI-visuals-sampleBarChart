@@ -65,15 +65,17 @@ export class Visual implements IVisual {
         const highlights = valueColumn.highlights;
         const colorPalette = this.host.colorPalette;
         const isHighContrast = colorPalette.isHighContrast;
+        const defaultColor = this.settings.dataColors.defaultColor.value.value;
 
         const data: BarDataPoint[] = categoryColumn.values.map((c, i) => {
             const selectionId = this.host.createSelectionIdBuilder()
                 .withCategory(categoryColumn, i)
                 .createSelectionId();
+            const paletteColor = colorPalette.getColor(String(categoryColumn.values[i])).value;
             return {
                 category: String(c),
                 value: <number>valueColumn.values[i],
-                color: colorPalette.getColor(String(categoryColumn.values[i])).value,
+                color: defaultColor || paletteColor,
                 selectionId,
                 tooltipInfo: [{ displayName: categoryColumn.source.displayName, value: String(c) }, { displayName: valueColumn.source.displayName, value: String(valueColumn.values[i]) }],
                 highlight: highlights && highlights[i] != null ? <number>highlights[i] : undefined
@@ -220,5 +222,9 @@ export class Visual implements IVisual {
 
             bars.exit().remove();
         }
+    }
+
+    public getFormattingModel(): powerbi.visuals.FormattingModel {
+        return formattingSettingsService.buildFormattingModel(this.settings);
     }
 }

@@ -132,6 +132,13 @@
         }
       }
     },
+    "dataColors": {
+      "properties": {
+        "defaultColor": {
+          "type": {"fill": {"solid": {"color": true}}}
+        }
+      }
+    },
     "barCard": {
       "properties": {
         "cornerRadius": {"type": {"integer": true}},

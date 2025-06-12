@@ -1,7 +1,7 @@
 import powerbiVisualsApi from "powerbi-visuals-api";
 import { formattingSettings, FormattingSettingsService } from "powerbi-visuals-utils-formattingmodel";
 
-const { SimpleCard, NumUpDown, ToggleSwitch, Model } = formattingSettings;
+const { SimpleCard, NumUpDown, ToggleSwitch, ColorPicker, Model } = formattingSettings;
 import ValidatorType = powerbiVisualsApi.visuals.ValidatorType;
 
 export class VisualSettings extends Model {
@@ -27,7 +27,19 @@ export class VisualSettings extends Model {
         slices = [this.cornerRadius, this.horizontal];
     }();
 
-    cards = [this.barCard];
+    public dataColors = new class extends SimpleCard {
+        defaultColor = new ColorPicker({
+            name: "defaultColor",
+            displayName: "Default color",
+            value: { value: "" }
+        });
+
+        name = "dataColors";
+        displayName = "Data colors";
+        slices = [this.defaultColor];
+    }();
+
+    cards = [this.barCard, this.dataColors];
 }
 
 export const formattingSettingsService = new FormattingSettingsService();

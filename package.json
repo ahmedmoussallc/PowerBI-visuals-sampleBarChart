@@ -1,6 +1,6 @@
 {
-    "name": "visual",
-    "version": "4.1.1.0",
+    "name": "rounded-bar-chart",
+    "version": "1.0.0",
     "scripts": {
         "pbiviz": "pbiviz",
         "start": "pbiviz start",

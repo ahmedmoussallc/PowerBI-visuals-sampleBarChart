@@ -82,6 +82,9 @@ export class Visual implements IVisual {
 
         const horizontal = this.settings.barCard.horizontal.value;
         const radius = this.settings.barCard.cornerRadius.value;
+
+        const maxBars = 100;
+        const sliced = data.slice(0, maxBars);
         const margin = { top: 20, right: 20, bottom: 40, left: 40 };
         const width = viewPort.width - margin.left - margin.right;
         const height = viewPort.height - margin.top - margin.bottom;
@@ -89,18 +92,22 @@ export class Visual implements IVisual {
 
         if (horizontal) {
             const y = scaleBand<string>()
-                .domain(data.map(d => d.category))
+                .domain(sliced.map(d => d.category))
                 .range([0, height])
                 .padding(0.1);
             const x = scaleLinear()
-                .domain([0, max(data, d => Math.max(d.value, d.highlight ?? 0)) || 0])
+                .domain([0, max(sliced, d => Math.max(d.value, d.highlight ?? 0)) || 0])
                 .range([0, width]);
 
             this.yAxisGroup.attr("transform", `translate(${margin.left},${margin.top})`).call(axisLeft(y));
             this.xAxisGroup.attr("transform", `translate(${margin.left},${margin.top + height})`).call(axisBottom(x));
 
-            const bars = g.selectAll<SVGGElement, BarDataPoint>("g.bar").data(data, d => d.category);
-            const barsEnter = bars.enter().append("g").classed("bar", true);
+            const bars = g.selectAll<SVGGElement, BarDataPoint>("g.bar").data(sliced, d => d.category);
+            const barsEnter = bars.enter().append("g")
+                .classed("bar", true)
+                .attr("tabindex", 0)
+                .attr("role", "graphics-symbol")
+                .attr("aria-label", d => `${d.category}: ${d.value}`);
             barsEnter.append("rect").classed("highlight", true);
             barsEnter.append("rect").classed("main", true);
 
@@ -133,6 +140,15 @@ export class Visual implements IVisual {
                     const isCtrl = (<MouseEvent>event).ctrlKey;
                     this.selectionManager.select(d.selectionId, isCtrl);
                 })
+                .on("contextmenu", (event, d) => {
+                    event.preventDefault();
+                    this.selectionManager.showContextMenu(d.selectionId, { x: (<MouseEvent>event).clientX, y: (<MouseEvent>event).clientY });
+                })
+                .on("keydown", (event, d) => {
+                    if ((<KeyboardEvent>event).key === "Enter") {
+                        this.selectionManager.select(d.selectionId, false);
+                    }
+                })
                 .each((d, i, nodes) => {
                     const node = select(nodes[i]);
                     this.tooltipServiceWrapper.addTooltip(node, () => d.tooltipInfo);
@@ -141,17 +157,21 @@ export class Visual implements IVisual {
             bars.exit().remove();
         } else {
             const x = scaleBand<string>()
-                .domain(data.map(d => d.category))
+                .domain(sliced.map(d => d.category))
                 .range([0, width])
                 .padding(0.1);
             const y = scaleLinear()
-                .domain([0, max(data, d => Math.max(d.value, d.highlight ?? 0)) || 0])
+                .domain([0, max(sliced, d => Math.max(d.value, d.highlight ?? 0)) || 0])
                 .range([height, 0]);
             this.xAxisGroup.attr("transform", `translate(${margin.left},${margin.top + height})`).call(axisBottom(x));
             this.yAxisGroup.attr("transform", `translate(${margin.left},${margin.top})`).call(axisLeft(y));
 
-            const bars = g.selectAll<SVGGElement, BarDataPoint>("g.bar").data(data, d => d.category);
-            const barsEnter = bars.enter().append("g").classed("bar", true);
+            const bars = g.selectAll<SVGGElement, BarDataPoint>("g.bar").data(sliced, d => d.category);
+            const barsEnter = bars.enter().append("g")
+                .classed("bar", true)
+                .attr("tabindex", 0)
+                .attr("role", "graphics-symbol")
+                .attr("aria-label", d => `${d.category}: ${d.value}`);
             barsEnter.append("rect").classed("highlight", true);
             barsEnter.append("rect").classed("main", true);
 
@@ -183,6 +203,15 @@ export class Visual implements IVisual {
                 .on("click", (event, d) => {
                     const isCtrl = (<MouseEvent>event).ctrlKey;
                     this.selectionManager.select(d.selectionId, isCtrl);
+                })
+                .on("contextmenu", (event, d) => {
+                    event.preventDefault();
+                    this.selectionManager.showContextMenu(d.selectionId, { x: (<MouseEvent>event).clientX, y: (<MouseEvent>event).clientY });
+                })
+                .on("keydown", (event, d) => {
+                    if ((<KeyboardEvent>event).key === "Enter") {
+                        this.selectionManager.select(d.selectionId, false);
+                    }
                 })
                 .each((d, i, nodes) => {
                     const node = select(nodes[i]);

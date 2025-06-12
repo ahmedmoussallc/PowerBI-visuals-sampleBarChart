@@ -1,18 +1,18 @@
 {
   "visual": {
-    "name": "Bar Chart",
-    "displayName": "barChart",
-    "guid": "PBI_CV_9894B302_1DFF_4A96_ABFE_BF8588197166",
-    "visualClassName": "BarChart",
-    "version": "4.1.1.0",
-    "description": "Sample bar chart",
-    "supportUrl": "pbicvsupport@microsoft.com",
+    "name": "RoundedBarChart",
+    "displayName": "Rounded Bar Chart",
+    "guid": "RoundedBarChart12345",
+    "visualClassName": "Visual",
+    "version": "1.0.0.0",
+    "description": "Bar chart with corner radius and orientation toggle",
+    "supportUrl": "https://example.com",
     "gitHubUrl": ""
   },
   "apiVersion": "5.8.0",
   "author": {
-    "name": "Author name",
-    "email": "author@mail.com"
+    "name": "Author",
+    "email": "author@example.com"
   },
   "assets": {
     "icon": "assets/icon.png"

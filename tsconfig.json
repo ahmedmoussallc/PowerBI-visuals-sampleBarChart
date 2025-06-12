@@ -8,9 +8,11 @@
     "sourceMap": true,
     "outDir": "./.tmp/build/",
     "moduleResolution": "node",
-    "declaration": true
+    "declaration": true,
+    "skipLibCheck": true
   },
   "files": [
-    "src/barChart.ts"
+    "src/visual.ts",
+    "src/settings.ts"
   ]
 }

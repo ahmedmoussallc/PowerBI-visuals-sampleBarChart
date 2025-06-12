@@ -19,7 +19,7 @@ export class VisualSettings extends Model {
         horizontal = new ToggleSwitch({
             name: "horizontal",
             displayName: "Horizontal vs Vertical",
-            value: true
+            value: false
         });
 
         name = "barCard";
